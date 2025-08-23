@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'io.mukulele'
+version = '0.1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    leshanVersion = '2.0.1' // Update to latest stable if needed
+    slf4jVersion = '2.0.13'
+    okhttpVersion = '4.12.0'
+    jacksonVersion = '2.17.2'
+}
+
+dependencies {
+    implementation "org.eclipse.leshan:leshan-client-californium:${leshanVersion}"
+    implementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+
+    implementation "com.squareup.okhttp3:okhttp:${okhttpVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+}
+
+application {
+    mainClass = 'io.mukulele.lwm2msk.App'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+tasks.named('shadowJar') {
+    archiveBaseName.set('lwm2m-signalk')
+    archiveClassifier.set('all')
+    mergeServiceFiles()
+}

@@ -1,0 +1,25 @@
+[Unit]
+Description=LwM2M client (Bootstrap NoSec) bridging Signal K to LwM2M
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# Bootstrap (NoSec)
+Environment=LWM2M_ENDPOINT_NAME=rpi-client
+Environment=LWM2M_BOOTSTRAP_URI=coap://lwm2m.os.1nce.com:5683
+
+# Signal K (paths TBD)
+Environment=SIGNALK_WS_URL=ws://localhost:3000/signalk/v1/stream
+# Environment=SIGNALK_TOKEN=<if-required>
+
+# Path to the fat jar built by Gradle
+ExecStart=/usr/bin/java -jar /opt/lwm2m-signalk/build/libs/lwm2m-signalk-all.jar
+WorkingDirectory=/opt/lwm2m-signalk
+User=pi
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
